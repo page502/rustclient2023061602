@@ -1046,7 +1046,7 @@ event keydown (evt) {
     }
 }
 
-$(body).content(<div style="size:*"><App /><div #msgbox /></div>);
+$(body).content(<App />);
 
 function self.closing() {
     var (x, y, w, h) = view.box(#rectw, #border, #screen);
