@@ -101,7 +101,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   buildRightPane(BuildContext context) {
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
-      child: DesktopSettingPage(),
+      child: child: DesktopSettingPage(initialPage: 0),
     );
   }
 
