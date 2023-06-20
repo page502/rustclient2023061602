@@ -285,7 +285,8 @@ class MyIdMenu: Reactor.Component {
 
     function render() {
         return <div #myid>
-            ID
+            {this.renderPop()}
+            ID{svg_menu}
         </div>;
     }
 
@@ -303,23 +304,9 @@ class MyIdMenu: Reactor.Component {
                 <Enhancements />
                 <li #allow-remote-config-modification><span>{svg_checkmark}</span>{translate('Enable remote configuration modification')}</li>
                 <div .separator />
-                <li #custom-server>{translate('ID/Relay Server')}</li>
-                <li #whitelist title={translate('whitelist_tip')}>{translate('IP Whitelisting')}</li>
-                <li #socks5-server>{translate('Socks5 Proxy')}</li>
-                <div .separator />
                 <li #stop-service class={service_stopped ? "line-through" : "selected"}><span>{svg_checkmark}</span>{translate("Enable Service")}</li>
-                {handler.is_rdp_service_open() ? <ShareRdp /> : ""}
-                <DirectServer />
-                {false && handler.using_public_server() && <li #allow-always-relay><span>{svg_checkmark}</span>{translate('Always connect via relay')}</li>}
-                {handler.is_ok_change_id() ? <div .separator /> : ""}
-                {username ? 
-                <li #logout>{translate('Logout')} ({username})</li> :
-                <li #login>{translate('Login')}</li>}
-                {handler.is_ok_change_id() && key_confirmed ? <li #change-id>{translate('Change ID')}</li> : ""}
-                <div .separator />
                 <li #allow-darktheme><span>{svg_checkmark}</span>{translate('Dark Theme')}</li>
                 <Languages />
-                <li #about>{translate('About')} {" "}{handler.get_app_name()}</li>
             </menu>
         </popup>;
     }
@@ -545,23 +532,24 @@ class App: Reactor.Component
         return
             <div .app>
                     <div .left-pane>
-                    <div>
-                        <div .your-desktop>
-                            <MyIdMenu />
-                            {key_confirmed ? <input type="text" readonly value={formatId(get_id())}/> : translate("Generating ...")}
-                        </div>
-                        <PasswordArea />
+	                    <div>
+	                        <div .title>{translate('Your Desktop')}</div>
+	                        <div .your-desktop>
+	                            <MyIdMenu />
+	                            {key_confirmed ? <input type="text" readonly value={formatId(get_id())}/> : translate("Generating ...")}
+	                        </div>
+	                        <PasswordArea />
+	                    </div>
+	                    {!is_win || handler.is_installed() ? "": <InstallMe />}
+	                    {software_update_url ? <UpdateMe /> : ""}
+	                    {is_win && handler.is_installed() && !software_update_url && handler.is_installed_lower_version() ? <UpgradeMe /> : ""}
+	                    {is_can_screen_recording ? "": <CanScreenRecording />}
+	                    {is_can_screen_recording && !handler.is_process_trusted(false) ? <TrustMe /> : ""}
+	                    {!service_stopped && is_can_screen_recording && handler.is_process_trusted(false) && handler.is_installed() && !handler.is_installed_daemon(false) ? <InstallDaemon /> : ""}
+	                    {system_error ? <SystemError /> : ""}
+	                    {!system_error && handler.is_login_wayland() && !handler.current_is_wayland() ? <FixWayland /> : ""}
+	                    {!system_error && handler.current_is_wayland() ? <ModifyDefaultLogin /> : ""}
                     </div>
-                    {!is_win || handler.is_installed() ? "": <InstallMe />}
-                    {software_update_url ? <UpdateMe /> : ""}
-                    {is_win && handler.is_installed() && !software_update_url && handler.is_installed_lower_version() ? <UpgradeMe /> : ""}
-                    {is_can_screen_recording ? "": <CanScreenRecording />}
-                    {is_can_screen_recording && !handler.is_process_trusted(false) ? <TrustMe /> : ""}
-                    {!service_stopped && is_can_screen_recording && handler.is_process_trusted(false) && handler.is_installed() && !handler.is_installed_daemon(false) ? <InstallDaemon /> : ""}
-                    {system_error ? <SystemError /> : ""}
-                    {!system_error && handler.is_login_wayland() && !handler.current_is_wayland() ? <FixWayland /> : ""}
-                    {!system_error && handler.current_is_wayland() ? <ModifyDefaultLogin /> : ""}
-                </div>
             </div>;
     }
 
@@ -1046,7 +1034,7 @@ event keydown (evt) {
     }
 }
 
-$(body).content(<App />);
+$(body).content(<div style="size:*"><App /><div #msgbox /></div>);
 
 function self.closing() {
     var (x, y, w, h) = view.box(#rectw, #border, #screen);

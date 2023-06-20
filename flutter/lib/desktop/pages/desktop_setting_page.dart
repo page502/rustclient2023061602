@@ -102,16 +102,10 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
       _TabInfo('General', Icons.settings_outlined, Icons.settings),
       _TabInfo('Security', Icons.enhanced_encryption_outlined,
           Icons.enhanced_encryption),
-      _TabInfo('Network', Icons.link_outlined, Icons.link),
       _TabInfo(
           'Display', Icons.desktop_windows_outlined, Icons.desktop_windows),
-      _TabInfo('Account', Icons.person_outline, Icons.person),
       _TabInfo('About', Icons.info_outline, Icons.info)
     ];
-    if (bind.pluginFeatureIsEnabled()) {
-      settingTabs.insert(
-          4, _TabInfo('Plugin', Icons.extension_outlined, Icons.extension));
-    }
     return settingTabs;
   }
 
@@ -119,14 +113,9 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
     final children = [
       _General(),
       _Safety(),
-      _Network(),
       _Display(),
-      _Account(),
       _About(),
     ];
-    if (bind.pluginFeatureIsEnabled()) {
-      children.insert(4, _Plugin());
-    }
     return children;
   }
 
@@ -1528,53 +1517,7 @@ class _AboutState extends State<_About> {
                           .marginSymmetric(vertical: 4.0)),
                   SelectionArea(
                       child: Text('${translate('Build Date')}: $buildDate')
-                          .marginSymmetric(vertical: 4.0)),
-                  SelectionArea(
-                      child: Text('${translate('Fingerprint')}: $fingerprint')
-                          .marginSymmetric(vertical: 4.0)),
-                  InkWell(
-                      onTap: () {
-                        launchUrlString('https://clouddesktop.com/privacy');
-                      },
-                      child: Text(
-                        translate('Privacy Statement'),
-                        style: linkStyle,
-                      ).marginSymmetric(vertical: 4.0)),
-                  InkWell(
-                      onTap: () {
-                        launchUrlString('https://clouddesktop.com');
-                      },
-                      child: Text(
-                        translate('Website'),
-                        style: linkStyle,
-                      ).marginSymmetric(vertical: 4.0)),
-                  Container(
-                    decoration: const BoxDecoration(color: Color(0xFF2c8cff)),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
-                    child: SelectionArea(
-                        child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Copyright © 2023 Purslane Ltd.\n$license',
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                              Text(
-                                translate('Slogan_tip'),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.white),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    )),
-                  ).marginSymmetric(vertical: 4.0)
+                          .marginSymmetric(vertical: 4.0))
                 ],
               ).marginOnly(left: _kContentHMargin)
             ]),
